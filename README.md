@@ -9,7 +9,7 @@
 <script src="./plotly-draggable/interpolator.js"></script>
 ```
 
-'''javascript
+```javascript
   
   	var inputPlot;
   
@@ -42,5 +42,5 @@
 	    Plotly.newPlot('graph2', data, layout);
 	  }
 
-'''
+```
   
