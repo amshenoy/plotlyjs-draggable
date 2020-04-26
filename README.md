@@ -3,11 +3,11 @@
 [View Demo](https://amshenoy.github.io/plotlyjs-draggable)
 
 ## Usage
-'''html
+```HTML
 <link href="./plotly-draggable/draggable.css" rel="stylesheet" type="text/css"></link>
 <script src="./plotly-draggable/draggable.js"></script>
 <script src="./plotly-draggable/interpolator.js"></script>
-'''
+```
 
 '''javascript
   
