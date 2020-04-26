@@ -1,93 +1,4 @@
 
-    // function interpolateCubicHermite(xeval, xbp, ybp, method, tension) {
-        // // first we need to determine tangents (m)
-        // var n = xbp.length;
-        // var obj = calcTangents(xbp, ybp, method, tension);
-        // m = obj.m;          // length n
-        // delta = obj.delta;  // length n-1
-        // var c = new Array(n-1);
-        // var d = new Array(n-1);
-        // for (var k=0; k < n-1; k++) {
-            // if (method.toLowerCase() == 'linear') {
-                // m[k] = delta[k];
-                // c[k] = d[k] = 0;
-                // continue;
-            // }
-            // var xdiff = xbp[k+1] - xbp[k];
-            // c[k] = (3*delta[k] - 2*m[k] - m[k+1]) / xdiff;
-            // d[k] = (m[k] + m[k+1] - 2*delta[k]) / xdiff / xdiff;
-        // }
-
-        // var len = xeval.length;
-        // var f = new Array(len);
-        // var k = 0;
-        // for (var i=0; i < len; i++) {
-            // var x = xeval[i];
-            // if (x < xbp[0] || x > xbp[n-1]) {
-                // throw "interpolateCubicHermite: x value " + x + " outside breakpoint range [" + xbp[0] + ", " + xbp[n-1] + "]";
-            // }
-            // while (k < n-1 && x > xbp[k+1]) {
-                // k++;
-            // }
-            // var xdiff = x - xbp[k];
-            // f[i] = ybp[k] + m[k]*xdiff + c[k]*xdiff*xdiff + d[k]*xdiff*xdiff*xdiff; 
-        // }
-        // return f;
-    // }
-
-    // function calcTangents(x, y, method, tension) {
-        // method = typeof method === 'undefined' ? 'fritschbutland' : method.toLowerCase();
-        // var n = x.length;
-        // var delta = new Array(n-1);
-        // var m = new Array(n);
-        // for (var k=0; k < n-1; k++) {
-            // var deltak = (y[k+1] - y[k]) / (x[k+1] - x[k]);
-            // delta[k] = deltak;
-            // if (k == 0) {   // left endpoint, same for all methods
-                // m[k] = deltak;
-            // } else if (method == 'cardinal') {
-                // m[k] = (1 - tension) * (y[k+1] - y[k-1]) / (x[k+1] - x[k-1]);
-            // } else if (method == 'fritschbutland') {
-                // var alpha = (1 + (x[k+1] - x[k]) / (x[k+1] - x[k-1])) / 3;  // Not the same alpha as below.
-                // m[k] = delta[k-1] * deltak <= 0  ?  0 : delta[k-1] * deltak / (alpha*deltak + (1-alpha)*delta[k-1]);
-            // } else if (method == 'fritschcarlson') {
-                // // If any consecutive secant lines change sign (i.e. curve changes direction), initialize the tangent to zero.
-                // // This is needed to make the interpolation monotonic. Otherwise set tangent to the average of the secants.
-                // m[k] = delta[k-1] * deltak < 0  ?  0 : (delta[k-1] + deltak) / 2;
-            // } else if (method == 'steffen') {
-                // var p = ((x[k+1] - x[k]) * delta[k-1] + (x[k] - x[k-1]) * deltak) / (x[k+1] - x[k-1]);
-                // m[k] = (Math.sign(delta[k-1]) + Math.sign(deltak)) * 
-                                    // Math.min(Math.abs(delta[k-1]), Math.abs(deltak), 0.5*Math.abs(p));
-            // } else {    // FiniteDifference
-                // m[k] = (delta[k-1] + deltak) / 2;               
-            // }
-        // }
-        // m[n-1] = delta[n-2];
-        // if (method != 'fritschcarlson') {
-            // return {m: m, delta: delta};
-        // }
-        
-        // // Second pass of FritschCarlson: adjust any non-monotonic tangents.
-        // for (var k=0; k < n-1; k++) {
-            // var deltak = delta[k];
-            // if (deltak == 0) {
-                // m[k] = 0;
-                // m[k+1] = 0;
-                // continue;
-            // }
-            // var alpha = m[k] / deltak;
-            // var beta = m[k+1] / deltak;
-            // var tau = 3 / Math.sqrt(Math.pow(alpha,2) + Math.pow(beta,2));
-            // if (tau < 1) {      // if we're outside the circle with radius 3 then move onto the circle
-                // m[k] = tau * alpha * deltak;
-                // m[k+1] = tau * beta * deltak;
-            // }
-        // }
-        // return {m: m, delta: delta};
-    // }
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
     function clamp(x, lower, upper) {
         return Math.max(lower, Math.min(x, upper));
     }
@@ -103,63 +14,6 @@
     }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    // var testdata = {
-		// test: {
-			// x: [0, 99, 100, 199, 200, 299, 300, 399, 400, 450],
-			// y: [0, 0, 10, 10, 0, 0, 35, 35, 0, 0],
-			// range: {x: [-50, 450], y: [-1, 90]}
-		// },
-        // Akima: {
-            // x: [0, 2, 3, 5, 6, 8, 9, 11, 12, 14, 15],
-            // y: [10, 10, 10, 10, 10, 10, 10.5, 15, 50, 60, 85],
-            // range: {x: [-1, 16], y: [0, 90]}
-        // },
-        // Hussain1: {
-            // x: [-9, -8, -4, 0, 4, 8, 9],
-            // y: [7, 5, 3.5, 3.25, 3.5, 5, 7],
-            // range: {x: [-11, 10], y: [3, 8]}
-        // },
-        // Hussain2: {
-            // x: [1, 1.5, 1.75, 2, 2.5, 3, 5, 10, 10.5, 11, 12],
-            // y: [10, 7, 5, 2.5, 1, 0.6, 0.4, 1, 3, 5, 9],
-            // range: {x: [-1, 13], y: [0, 11]}
-        // },
-        // WolbergAlfy1: {
-            // x: [0, 1, 2, 3, 4, 4.5, 6, 7, 7.3, 9, 10, 11],
-            // y: [0, 1, 4.8, 6, 8, 13, 14, 15.5, 18, 19, 23, 24.1],
-            // range: {x: [-1, 11.5], y: [0, 26]}
-        // },
-        // WolbergAlfy2: {
-            // x: [0.0196, 0.1090, 0.1297, 0.2340, 0.2526, 0.3003, 0.3246, 0.3484, 0.3795, 0.4289,
-                // 0.4603, 0.4952, 0.5417, 0.6210, 0.6313, 0.6522, 0.6979, 0.7095, 0.8318, 0.8381],
-            // y: [4, 4.5, 14, 16, 24, 30, 28, 35, 36, 38, 39, 40, 30, 23, 20, 19, 18, 5, 4, 3],
-            // range: {x: [-0.1, 0.85], y: [0, 43]}
-        // },
-        // monotonicMotivation: {
-            // x: [1, 2, 3.6, 4, 5.8, 6, 10],
-            // y: [6, 2, 2, 7, 7, 1, 9],
-            // range: {x: [0, 10.3], y: [0, 10]}
-        // },
-        // cardinalFail: {
-            // x: [1, 2, 3, 4, 5, 6, 6.5, 7, 7.5, 8, 8.5],
-            // y: [0, 1, 2, 3, 4, 5, 4, 3, 2, 1, 0],
-            // range: {x: [0, 9], y: [0, 6]}
-        // },
-        // endpointsOnly: {
-            // x: [1, 10],
-            // y: [1, 1],
-            // range: {x: [0, 10.3], y: [0, 10]}
-        // },
-        // hiddenDemo: {
-            // x: [1, 2, 6, 7, 8],
-            // y: [2, 1, 4, 0, 0],
-            // range: {x: [0, 8.2], y: [-1, 5]}
-        // },  
-    // }
-	
-    
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
-	
 	
 	var trash_svg = '<svg class="trash" width="20" height="20" viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg"><path d="M704 736v576q0 14-9 23t-23 9h-64q-14 0-23-9t-9-23v-576q0-14 9-23t23-9h64q14 0 23 9t9 23zm256 0v576q0 14-9 23t-23 9h-64q-14 0-23-9t-9-23v-576q0-14 9-23t23-9h64q14 0 23 9t9 23zm256 0v576q0 14-9 23t-23 9h-64q-14 0-23-9t-9-23v-576q0-14 9-23t23-9h64q14 0 23 9t9 23zm128 724v-948h-896v948q0 22 7 40.5t14.5 27 10.5 8.5h832q3 0 10.5-8.5t14.5-27 7-40.5zm-672-1076h448l-48-117q-7-9-17-11h-317q-10 2-17 11zm928 32v64q0 14-9 23t-23 9h-96v948q0 83-47 143.5t-113 60.5h-832q-66 0-113-58.5t-47-141.5v-952h-96q-14 0-23-9t-9-23v-64q0-14 9-23t23-9h309l70-167q15-37 54-63t79-26h320q40 0 79 26t54 63l70 167h309q14 0 23 9t9 23z"/></svg>';
 
@@ -273,7 +127,7 @@ class PlotlyDraggable {
 		updateFigure() {
 		
 			var sortedhandles = this.sortedHandles();
-			var xx = linspace(sortedhandles.xmin, sortedhandles.xmax, 1000);
+			var xx = linspace(sortedhandles.xmin, sortedhandles.xmax, 1000); // TBD ADD 1000 as a parameter
 			//var xx = linspace(sortedhandles.xmin, sortedhandles.xmax, (sortedhandles.xmax - sortedhandles.xmin)/(0.0001)) );
 			
 			var interp = new Interpolator();
@@ -373,5 +227,3 @@ class PlotlyDraggable {
 			d3.selectAll(".scatterlayer .trace:last-of-type .points path").call(drag);
 		}
 }
-
-    
